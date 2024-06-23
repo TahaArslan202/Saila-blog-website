@@ -1,0 +1,194 @@
+<%- include("partials/_header") %>
+
+<section id="features" class="sectionArea">
+    <% if (blog.user.profile.profileBackroundUrl === "varsayılan_profileBackroundUrl") { %>
+        <div style="background: url('../images/main1.jpg') no-repeat 50% 20% / cover;" class="blog_backround"></div>
+      <% } else { %>
+        <div style="background: url('<%= blog.user.profile.profileBackroundUrl %>') no-repeat 50% 20% / cover;" class="blog_backround"></div>
+      <% } %>
+    
+    <div class="blog-container">
+        <div class="blog-header">
+            <img src="<%= blog.url %>" alt="<%= blog.name %>"">
+        </div>
+        <div class="blog-content">
+            <h1 class="blog-title"><%= blog.name %></h1>
+            <p class="blog-date"><%= blog.uploadedAt.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'Europe/Istanbul' })  %></p>
+            <div class="blog-text">
+                <% if ( (user === null) ) { %>
+                        <p><%= blog.description.substring(0,500) %></p>
+                    <p class="showcm">Log in up to see blog</p>
+                <% } else { %>
+                    <% blog.description.split(/\n\s*\n/).forEach(function(paragraph) { %>
+                        <p><%= paragraph.trim() %></p>
+                    <% }); %>
+                <% } %>  
+            </div>
+            <div class="blog-author">
+                <p>Written by <a class="authorlink" style="font-weight: 500; font-family: Poppins; margin-left: 5px; font-size: 18px;" href="/users/<%= blog.user.id %>"><%=blog.user.username%></a></p>
+                <div class="actions">
+                    <% if ( (user === null) ) { %>
+
+                    <% } else { %>
+                    <a href="#" id="like-button" data-blog-id="<%= blog.id %>" data-blog-name="<%= blog.name %>">
+                        <% if (blog.likes.find(like => like.equals(user._id))) { %>
+                            <i class="fa fa-thumbs-up"></i> 
+                        <% } else { %>
+                            <i class="fa fa-thumbs-o-up"></i> 
+                        <% } %>  
+                    </a><span class="like-count" id="like-count-<%= blog.id %>"><%= blog.likes.length %></span>
+                    <a href="#" id="dislike-button" data-blog-id="<%= blog.id %>" data-blog-name="<%= blog.name %>">
+                        <% if (blog.dislikes.find(like => like.equals(user._id))) { %>
+                            <i class="fa fa-thumbs-down"></i> 
+                        <% } else { %>
+                            <i class="fa fa-thumbs-o-down"></i> 
+                        <% } %>  
+                    </a><span class="dislike-count" id="dislike-count-<%= blog.id %>"><%= blog.dislikes.length %></span> 
+                    <i class="fa fa-book"></i> <span class="read-count" id="read-count-<%= blog.id %>"><%= blog.blogread.length %></span> 
+                    <% } %>      
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="comment-container">
+        <h2>Add Comment</h2>
+        <% var blogId = blog.id; %>
+        <form id="commentForm" action="/blogs/<%= blogId %>/comment" method="POST" data-blog-id="<%= blogId %>">
+
+            <textarea id="commentContent" name="commentContent" ></textarea> 
+
+            <div class="input-box1">
+                <div style="display: none;" class="alert alert-danger" id="content" ></div>
+              </div>
+
+            <input type="submit" value="Add Comment">
+        </form>
+        <% if ( (user === null) ) { %>
+        <p class="showcm">Log in to see comments</p>
+        <% } %> 
+    </div>
+    <% if ( !(user === null) ) { %>
+        <% var userId = user._id; %>
+    <div class="comment-container" id="USERID" data-user-id="<%= userId %>">
+
+        <h2>COMMENTS</h2>
+
+        <% for (comment of blogcomments) { %>
+        <div>
+            <div class="usersComments">
+                <div class="user-profile">
+                    <a href="/users/<%= comment.author.id %>">
+                        <% if ( comment.author.profile.profileUrl === "varsayılan_profileUrl") { %>
+                            <img src="/images/user.jpg" alt="">
+                        <% } else { %>
+                            <img src="<%= comment.author.profile.profileUrl %>" alt="">
+                        <% } %>              
+                    </a>
+                </div>
+                <div id="usercomment_content">
+                    <div class="username"><a href="/users/<%= comment.author.id %>"><%= comment.author.username %></a> <span class="date" data-date="<%= new Date(comment.createdAt).toISOString() %>"></span></div>
+                    <div class="text">
+                        <% comment.content.split(/\n\s*\n/).forEach(function(paragraph) { %>
+                            <p><%= paragraph %></p>
+                        <% }); %>
+                    </div>
+                    <div class="actions">
+                        <a href="#" id="like-button" data-blog-id="<%= blog.id %>" data-comment-id="<%= comment.id %>">
+                            <% if (comment.likes.find(like => like.equals(user._id))) { %>
+                                <i class="fa fa-thumbs-up"></i> 
+                            <% } else { %>
+                                <i class="fa fa-thumbs-o-up"></i> 
+                            <% } %>  
+                        </a><span class="like-count" id="like-count-<%= comment.id %>"><%= comment.likes.length %></span>
+                        <a href="#" id="dislike-button" data-blog-id="<%= blog.id %>" data-comment-id="<%= comment.id %>">
+                            <% if (comment.dislikes.find(like => like.equals(user._id))) { %>
+                                <i class="fa fa-thumbs-down"></i> 
+                            <% } else { %>
+                                <i class="fa fa-thumbs-o-down"></i> 
+                            <% } %>  
+                        </a><span class="dislike-count" id="dislike-count-<%= comment.id %>"><%= comment.dislikes.length %></span>              
+                        <a id="reply-button" onclick="showReplyForm(this)">Reply</a>
+                    </div>
+                    <form class="reply-form" action="/blogs/<%= blog.id %>/comment/<%= comment.id %>" style="display: none;" method="POST">
+                        <div class="reaplyuser-profile">
+                            <% if ( user.profile.profileUrl === "varsayılan_profileUrl") { %>
+                                <img src="/images/user.jpg" alt="">
+                            <% } else { %>
+                                <img src="<%= user.profile.profileUrl %>" alt="">
+                            <% } %>  
+                        </div>
+                        <textarea class="reply-input" name="commentCommentContent" placeholder="Yanıt ekleyin..."></textarea>
+                        <div class="reply-actions">
+                            <a id="cancel-reply-button" onclick="hideReplyForm(this)">Cancel</a>
+                            <button type="submit"  id="submit-reply-button">Reply</button>
+                        </div>
+                    </form>
+                    <% if ( comment.commentscomment.length > 0 ){ %>
+                        <a id="show-replies-button" onclick="toggleReplies('<%= comment.id %>')">Show Replies</a>
+                    <% } %>  
+                </div>
+            </div>
+    
+            <div class="replies" id="replies-<%= comment.id %>" >
+                
+                <% for (commentcm of comment.commentscomment) { %>
+                <div class="reply">
+                    <div class="replycommentuser-profile">
+                        <a href="/users/<%= commentcm.author.id %>">
+                        <% if ( commentcm.author.profile.profileUrl === "varsayılan_profileUrl") { %>
+                            <img src="/images/user.jpg" alt="">
+                        <% } else { %>
+                            <img src="<%= commentcm.author.profile.profileUrl %>" alt="">
+                        <% } %>  
+                        </a>
+                    </div>
+                    <div class="comment-content">
+                        <div class="username"><a href="/users/<%= commentcm.author.id %>"><%= commentcm.author.username %> </a><span class="date" data-date="<%= new Date(commentcm.createdAt).toISOString() %>"></span></div>
+                        <div class="text"><span class="reply-to">@<%= commentcm.personanswer.username %>: </span><%commentcm.content.split(/\n\s*\n/).forEach(function(paragraph){%><%=paragraph%><% }); %></div>
+                        <div class="actions">
+                            <a href="#" id="like-button" data-blog-id="<%= blog.id %>" data-comment-id="<%= comment.id %>" data-commentcomment-id="<%= commentcm.id %>">
+                                <% if (commentcm.likes.find(like => like.equals(user._id))) { %>
+                                    <i class="fa fa-thumbs-up"></i> 
+                                <% } else { %>
+                                    <i class="fa fa-thumbs-o-up"></i> 
+                                <% } %>  
+                            </a><span class="like-count" id="like-count-<%= commentcm.id %>"><%= commentcm.likes.length %></span>
+                            <a href="#" id="dislike-button" data-blog-id="<%= blog.id %>" data-comment-id="<%= comment.id %>" data-commentcomment-id="<%= commentcm.id %>">
+                                <% if (commentcm.dislikes.find(like => like.equals(user._id))) { %>
+                                    <i class="fa fa-thumbs-down"></i> 
+                                <% } else { %>
+                                    <i class="fa fa-thumbs-o-down"></i> 
+                                <% } %>  
+                            </a><span class="dislike-count" id="dislike-count-<%= commentcm.id %>"><%= commentcm.dislikes.length %></span>    
+                            <a id="reply-button" onclick="showReplyForm(this)">Reply</a>
+                        </div>
+                        <form class="reply-form" action="/blogs/<%= blog.id %>/comment/<%= comment.id %>/<%= commentcm.author.id %>" style="display: none;" method="POST">
+                            <div class="reaplyuser-profile">
+                                <% if ( user.profile.profileUrl === "varsayılan_profileUrl") { %>
+                                    <img src="/images/user.jpg" alt="">
+                                <% } else { %>
+                                    <img src="<%= user.profile.profileUrl %>" alt="">
+                                <% } %>  
+                            </div>
+                            <textarea class="reply-input" name="commentCommentContent" placeholder="Yanıt ekleyin..."></textarea>
+                            <div class="reply-actions">
+                                <a id="cancel-reply-button" onclick="hideReplyForm(this)">Cancel</a>
+                                <button type="submit"  id="submit-reply-button">Reply</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <% } %>
+
+            </div>
+
+        </div>
+        <% } %>
+
+    </div>
+    <% } %>  
+
+    <script src="/js/blog.js"></script>
+
+<%- include("partials/_footer") %>

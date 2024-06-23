@@ -1,0 +1,263 @@
+<%- include("partials/_header") %>
+
+    <!-- USER PROFİLE SECTİON -->
+    
+    <section class="header_wrapper">
+        <% if (user.profile.profileBackroundUrl === "varsayılan_profileBackroundUrl") { %>
+            <div style="background: url('../images/main1.jpg') no-repeat 50% 20% / cover;" class="user_backround"></div>
+          <% } else { %>
+            <div style="background: url('<%= user.profile.profileBackroundUrl %>') no-repeat 50% 20% / cover;" class="user_backround"></div>
+          <% } %>
+        <div class="cols_container">
+            <div class="left_col">
+                <div class="image_container">
+                    <% if (user.profileframe === "default") { %>
+
+                    <% } else { %>
+                      <img class="avatarframe" class="avatarframe" src="/images/<%= user.profileframe %>" alt="">
+                    <% } %>
+                    <% if (user.profile.profileUrl === "varsayılan_profileUrl") { %>
+                        <img class="avatar"  src="/images/user.jpg" alt="">
+                    <% } else { %>
+                        <img class="avatar"  src="<%= user.profile.profileUrl %>" alt="">
+                    <% } %>
+                    <% if (user.onlineoffline == "yellow") { %>
+                        <span></span>
+                    <% } else { %>
+                        <span style="background: red;"></span>
+                    <% } %>
+                </div>
+                <h2><%= user.username %></h2>
+                <% if (user.profile.profilejob === "varsayılan_profilejob") { %>
+                    <p>Title : Not entered</p>
+                  <% } else { %>
+                    <p><%= user.profile.profilejob %></p>
+                  <% } %>
+                <p><%= user.email %></p>
+
+                <ul class="user_about">
+                    <li><span><%=user.followers.length %></span>Followers</li>
+                    <li><span><%=user.following.length %></span>Following</li>
+                    <li><span><%=comments.length+commentcomments.length %></span>Comments</li>
+                    <li><span><%= userblogs.length %></span>Blogs</li>
+                </ul>
+
+                <div class="user_content">
+                    <p>Links to increase communication</p>
+
+                    <ul>
+                        <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                        <li><a href="#"><i class="fa fa-pinterest"></i></a></li>
+                    </ul>
+
+                </div>
+            </div>
+
+            <div class="right_col">
+                <nav>
+                    <ul>
+                        <li><a id="bloglink" href="#" onclick="blogShow(event)">Blogs</a></li>
+                        <li><a id="aboutlink" href="#" onclick="aboutShow(event)">About</a></li>
+                        <li><a id="commentslink" href="#" onclick="commentsShow(event)">Comments</a></li>
+                        <li><a id="followerlink" href="#" onclick="followerShow(event)">Follower</a></li>
+                        <li><a id="followedlink" href="#" onclick="followedShow(event)">Following</a></li>
+                    </ul>
+                    <% if (user.id === oankiuser.id) { %>
+                    <% } else { %>   
+                      <% if (!infollowers) { %>
+                          <a class="folButton" href="/users/<%= user._id %>/follow?_method=PUT">Follow</a>
+                      <% } else { %>     
+                          <a class="folButton" href="/users/<%= user._id %>/unfollow?_method=PUT">Unfollow</a>
+                      <% } %>  
+                    <% } %>  
+                </nav>
+
+                <div id="user_blogs">
+                    <% for (blog of userblogs) { %>
+                        <div class="userThumbnailItem">
+                            <a href="/blogs/<%= blog.id %>">
+                                <img src="<%= blog.url %>" alt="<%= blog.name %>">
+                                <div class="userThumbnailContentname">
+                                  <div class="userThumbnailContent1">
+                                    <div class="title"><%= blog.name %></div>
+                                    <div class="category"><%= blog.category %></div>
+                                  </div>
+                                </div>
+                                <div class="userThumbnailContentlikedis">
+                                  <div class="userThumbnailContent2">
+                                    <div class="like"><i class="fa fa-thumbs-up"></i><%= blog.likes.length %><i class="fa fa-thumbs-down"></i><%= blog.dislikes.length %></div>
+                                    <div class="read"><i class="fa fa-book"></i> <%= blog.blogread.length %></div>
+                                  </div>
+                                </div>
+                            </a>
+                        </div>
+                    <% } %>
+                </div>
+
+                <div id="userAbout">
+                    <h2>About Me</h2>
+                    <% if (user.profile.profileaboutMe === "varsayılan_profileaboutMe") { %>
+                        <p>You did not enter any information about yourself</p>
+                      <% } else { %>
+                        <p><%= user.profile.profileaboutMe %></p>
+                      <% } %>
+                </div>
+
+                <div id="userComment">
+                    <h2><%= user.username %>'s COMMENTS</h2>
+                    <% for (comment of comments) { %>
+                      <div class="userCommentItem">
+                            <div class="userComment">
+                              <% comment.content.split(/\n\s*\n/).forEach(function(paragraph) { %>
+                                <p><%= paragraph %></p>
+                            <% }); %>
+                            </div>
+                            <div class="deletecomment">
+                            <p>Commented Blog <a id="b"  href="/blogs/<%= comment.blognameid.id %>"><%= comment.blognameid.name %></a></p>
+                            </div>
+                      </div>
+                    <% } %>
+                    <% if(!(commentcomments === null)) { %>
+                      <% for (comment of commentcomments) { %>
+                        <div class="userCommentItem">
+                              <div class="userComment">
+                                <% comment.content.split(/\n\s*\n/).forEach(function(paragraph) { %>
+                                  <p><span class="reply-to">@<%= comment.personanswer.username %>: </span><%= paragraph %></p>
+                              <% }); %>
+                              </div>
+                              <div class="deletecomment">
+                              <p>Commented Blog :<a id="b"  href="/blogs/<%= comment.blognameid.id %>"><%= comment.blognameid.name %></a></p>
+                              <p>Under <%= comment.commentpersonanswerauthor.username %>'s comment</p>
+                              </div>
+                        </div>
+                      <% } %>
+                      <% } %>
+                  </div>
+
+                <div id="user_follower">
+                    <% for (follower of user.followers) { %>
+                        <div class="userFollowerItem">
+                            <% if (follower.profile.profileUrl === "varsayılan_profileUrl") { %>
+                                <a href="/users/<%= follower.id %>"><img src="/images/user.jpg" alt=""></a>
+                              <% } else { %>
+                                <a href="/users/<%= follower.id %>"><img src="<%= follower.profile.profileUrl %>" alt=""></a>
+                              <% } %>
+                              <% if (follower.onlineoffline == "yellow") { %>
+                                <span></span>
+                                <% } else { %>
+                                <span style="background: red;"></span>
+                                <% } %>
+                            <h2><%= follower.username %></h2>
+                        </div>
+                    <% } %>
+                </div>
+        
+                <div id="user_followed">
+                    <% for (follower of user.following) { %>
+                        <div class="userFollowedItem">
+                            <% if (follower.profile.profileUrl === "varsayılan_profileUrl") { %>
+                                <a href="/users/<%= follower.id %>"><img src="/images/user.jpg" alt=""></a>
+                              <% } else { %>
+                                <a href="/users/<%= follower.id %>"><img src="<%= follower.profile.profileUrl %>" alt=""></a>
+                              <% } %>
+                              <% if (follower.onlineoffline == "yellow") { %>
+                                <span></span>
+                                <% } else { %>
+                                <span style="background: red;"></span>
+                                <% } %>
+                            <h2><%= follower.username %></h2>
+                        </div>
+                    <% } %>
+                </div>
+                
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+
+function resetStyles() {
+  const links = document.querySelectorAll('nav a:not(.folButton)');
+  links.forEach(link => {
+    link.style.color = "#818181";
+    link.style.fontWeight = "normal";
+  });
+}
+
+function hideSections() {
+   const elementsToHide = ['user_blogs', 'userAbout', 'user_follower', 'user_followed', 'userComment'];
+ 
+   elementsToHide.forEach(elementId => {
+     const element = document.getElementById(elementId);
+     if (element) {
+       element.style.display = 'none';
+     }
+   });
+ }
+
+ function blogShow(event) {
+   event.preventDefault();
+   resetStyles();
+   hideSections();
+   
+   document.getElementById('user_blogs').style.display = 'grid';
+   document.getElementById('user_blogs').classList.remove('hidden');
+   
+   document.getElementById('bloglink').style.color = "#1d1d1d";
+   document.getElementById('bloglink').style.fontWeight = "600";
+ }
+
+ function aboutShow(event) {
+   event.preventDefault();
+   hideSections();
+   resetStyles();
+   
+   document.getElementById('userAbout').style.display = 'block';
+   document.getElementById('userAbout').classList.remove('hidden');
+   
+   document.getElementById('aboutlink').style.color = "#1d1d1d";
+   document.getElementById('aboutlink').style.fontWeight = "600";
+ }
+
+ function followerShow(event) {
+   event.preventDefault();
+   hideSections();
+   resetStyles();
+   
+   document.getElementById('user_follower').style.display = 'grid';
+   document.getElementById('user_follower').classList.remove('hidden');
+   
+   document.getElementById('followerlink').style.color = "#1d1d1d";
+   document.getElementById('followerlink').style.fontWeight = "600";
+ }
+
+ function followedShow(event) {
+   event.preventDefault();
+   hideSections();
+   resetStyles();
+   
+   document.getElementById('user_followed').style.display = 'grid';
+   document.getElementById('user_followed').classList.remove('hidden');
+   
+   document.getElementById('followedlink').style.color = "#1d1d1d";
+   document.getElementById('followedlink').style.fontWeight = "600";
+ }
+
+ function commentsShow(event) {
+   event.preventDefault();
+   hideSections();
+   resetStyles();
+   
+   document.getElementById('userComment').style.display = 'grid';
+   document.getElementById('userComment').classList.remove('hidden');
+   
+   document.getElementById('commentslink').style.color = "#1d1d1d";
+   document.getElementById('commentslink').style.fontWeight = "600";
+ }
+
+    </script>
+
+<%- include("partials/_footer") %>

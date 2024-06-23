@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Blog Yazma Ve Okuma">
+  <meta name="author" content="Taha Arslan">
+  <meta name="keywords" content="Blog,Blog Yazma,Blog Okuma,BLOGCU">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAİLA</title>
+  
+  <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet"  href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+  <link rel="stylesheet"  href="/css/reset.css">
+  <link rel="stylesheet"  href="/css/index.css">
+</head>
+<body>
+
+	<header>
+		<a href="#" class="logo"><img src="/images/logo.jpeg" alt=""></a>
+		<div class="menu">
+			<div class="btn">
+				<i class="fa fa-times close-btn"></i>
+			</div>
+			<a class="<%= link === 'index' && 'active' %>" href="/">HOME</a>
+			<a class="<%= link === 'about' && 'active' %>" href="/about">ABOUT</a>
+			<a class="<%= link === 'blogs' && 'active' %>" href="/blogs">BLOGS</a>
+
+			<% if(user) { %>
+				<a class="<%= link === 'users' && 'active' %>" href="/users">USERS</a>
+				<a class="<%= link === 'shop' && 'active' %>" href="/users/shop">SHOP</a>
+				<a class="<%= link === 'dashboard' && 'active' %>" href="/users/dashboard">DASHBOARD</a>
+				<a href="/logout">LOG OUT</a>
+			<% } else { %>
+				<a class="<%= link === 'login' && 'active' %>" href="/login">LOGIN</a>
+				<a class="<%= link === 'register' && 'active' %>" href="/register">REGİSTER</a>
+			<% } %>
+
+		</div>
+		<div class="btn">
+			<i class="fa fa-bars menu-btn"></i>
+		</div>
+	</header>

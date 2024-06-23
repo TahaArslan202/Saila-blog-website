@@ -1,0 +1,128 @@
+<%- include("partials/_header") %>
+
+    <!-- CAROUSEL SECTİON -->
+    <section class="carousel">
+
+        <div class="carouselList">
+
+            <% for (sonblog of blogsenson) { %>
+                <div class="carouselItem">
+                    <img src="<%= sonblog.url %>" alt="<%= sonblog.name %>">
+                    <div class="carouselContent">
+                        <div class="author"><%= sonblog.user.username %></div>
+                        <div class="title"><%= sonblog.name %></div>
+                        <div class="category"><%= sonblog.category %></div>
+                        <div class="description"><%= sonblog.description.substring(0,300)+"..." %></div>
+                        <div class="buttons">
+                            <a href="/blogs/<%= sonblog.id %>">SEE MORE</a>
+                            <div class="blogsLikeDislikeContent">
+                                <div class="like"><i class="fa fa-thumbs-up"></i><%= sonblog.likes.length %><i class="fa fa-thumbs-down"></i><%= sonblog.dislikes.length %></div>
+                                <div class="read"><i class="fa fa-book"></i> <%= sonblog.blogread.length %></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+
+        </div>
+
+        <!-- THUMBNAİL -->
+    
+        <div class="thumbnail">
+
+        <% 
+            let yeniblogsenson = blogsenson.slice();
+            let ilkEleman = yeniblogsenson.shift();
+            yeniblogsenson.push(ilkEleman);
+        %>
+
+        <% for (sonblog of yeniblogsenson) { %>
+            <div class="thumbnailItem">
+            <img src="<%= sonblog.url %>" alt="<%= sonblog.name %>">
+            <div class="thumbnailContent">
+                <div class="title"><%= sonblog.name %></div>
+                <div class="category">Travel</div>
+            </div>
+            </div>
+        <% } %>
+
+        </div>
+
+        <!-- ARROWS -->
+
+        <div class="arrows">
+            <button id="prev"><</button>
+            <button id="next">></button>
+        </div>
+
+        <div class="time"></div>
+
+    </section>
+
+    <!-- BLOG SECTION -->
+
+    <section id="blogs" class="sectionArea ">
+
+        <div class="blogsTop">
+            <h2 class="sectionHeader">BLOGS</h2>
+        </div>
+
+        <div class="blogsSearchBar">
+            <form id="SearchBar" action="/blogs/search/search" method="GET">
+                <div class="search_container">
+                    <input type="text" name="query" placeholder="Search...">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </div>
+            </form>            
+        </div>
+
+        <div class="blogsCategory">
+            <nav>
+                <a href="/blogs/">All Blogs<span>(<%= allBlogsCount %>)</span></a>
+                <a href="/blogs/category/Love">Love<span>(<%= blogCounts.Love %>)</span></a>
+                <a href="/blogs/category/Technology">Technology<span>(<%= blogCounts.Technology %>)</span></a>
+                <a href="/blogs/category/Life">Life<span>(<%= blogCounts.Life %>)</span></a>
+                <a href="/blogs/category/Travel">Travel<span>(<%= blogCounts.Travel %>)</span></a>
+                <a href="/blogs/category/Animal">Animal<span>(<%= blogCounts.Animal %>)</span></a>
+                <a href="/blogs/category/Nature">Nature<span>(<%= blogCounts.Nature %>)</span></a>
+                <a href="/blogs/category/Movie">Movie<span>(<%= blogCounts.Movie %>)</span></a>
+            </nav>
+        </div>
+
+        <div class="blogsBody">
+            <div class="blogsContainer">
+
+            <% for (blog of blogs) { %>
+                <div class="col3">
+                    <div class="blogsITEM">
+                        <div class="blogsThumbnailItem">
+                            <a href="/blogs/<%= blog.id %>">
+                                <img src="<%= blog.url %>" alt="<%= blog.name %>">
+                                <div class="blogsThumbnailContent">
+                                    <div class="blogsThumbnailContent1">
+                                        <div class="title"><%= blog.user.username  %></div>
+                                        <div class="title"><%= blog.name %></div>
+                                        <div class="category"><%= blog.category %></div>
+                                    </div>
+                                    <div class="blogsThumbnailContent2">
+                                        <div class="like"><i class="fa fa-thumbs-up"></i><%= blog.likes.length %><i class="fa fa-thumbs-down"></i><%= blog.dislikes.length %></div>
+                                        <div class="read"><i class="fa fa-book"></i> <%= blog.blogread.length %></div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="description"><%= blog.description.substring(0,130)+"..." %></div>
+                    </div >
+                </div>
+            <% } %>
+
+            </div>
+        </div>
+
+    </section>
+
+
+          <!-- FOOTER -->
+<script src="/js/blogs.js"></script>
+
+<%- include("partials/_footer") %>

@@ -1,0 +1,110 @@
+<%- include("partials/_header") %>
+
+     <!-- LOGIN SECTION -->
+
+     <section id="loginSection" class="sectionArea sectionSetting">
+      <div class="wrapper">
+          <form action="users/register" method="POST">
+              <h1>Register</h1>
+
+              <div class="input-box">
+                  <input type="text" placeholder="Username" name="username">
+                  <i class="bx bxs-user"></i>
+              </div>
+
+              <div class="input-box1">
+                <div class="alert alert-danger" id="username" ></div>
+              </div>
+
+              <div class="input-box">
+                  <input  placeholder="Email" name="email">
+                  <i class="bx bxs-envelope"></i>
+              </div>
+
+              <div class="input-box1">
+                <div style="display: none;" class="alert alert-danger" id="email" ></div>
+              </div>
+
+              <div class="input-box">
+                  <input type="password" placeholder="Password" name="password">
+                  <i class="bx bxs-lock-alt"></i>
+              </div>
+
+              <div class="input-box1">
+                <div style="display: none;" class="alert alert-danger" id="password" ></div>
+              </div>
+
+              <button type="submit" class="btn">Register</button>
+  
+              <div class="register-link">
+                  <p>Already have an account? <a href="/login">Login</a></p>
+              </div>
+          </form>        
+      </div>
+  </section>
+
+  <script>
+            const form = document.querySelector('form')
+            const emailError = document.querySelector('#email')
+            const passwordError = document.querySelector('#password')
+            const usernameError = document.querySelector('#username')
+
+            form.addEventListener("submit", async (e) => {
+               e.preventDefault();
+
+               emailError.textContent = "";
+               passwordError.textContent = "";
+               usernameError.textContent = "";
+               emailError.style.display = "none";
+               passwordError.style.display = "none";
+               usernameError.style.display = "none";
+
+               const email = form.email.value;
+               const password = form.password.value;
+               var username = form.username.value;
+               username = username.trim();
+               username = username.replace(/\s+/g, ' ');
+
+               try {
+                  const res = await fetch("users/register", {
+                     method: "POST",
+                     body: JSON.stringify({ username,email, password }),
+                     headers: { "Content-Type": "application/json" }
+                  });
+
+                  const data = await res.json();
+
+                  if (data) {
+
+                     if (data.email) {
+                        emailError.textContent = data.email
+                        emailError.style.display = "block"
+                     }
+
+                     if (data.password) {
+                        passwordError.textContent = data.password
+                        passwordError.style.display = "block"
+                     }
+
+                     if (data.username) {
+                        usernameError.textContent = data.username
+                        usernameError.style.display = "block"
+                     }
+
+                  } 
+
+                  if(data.user){
+                    location.assign("/login")
+                  }
+                  
+               } 
+               
+               catch (err) {
+                  console.log("ERR::", err)
+               }
+            });
+            
+         </script>
+
+
+ <%- include("partials/_footer") %>

@@ -1,0 +1,51 @@
+<%- include("partials/_header") %>
+<section id="shop" class="sectionArea ">
+
+    <div class="shopTop">
+        <h2 class="sectionHeader">SHOP</h2>
+    </div>
+
+    <div class="shopTop">
+        <h2 class="sectionHeader">POINTS : <%=user.point%></h2>
+    </div>
+
+    <div class="shopBody">
+        <div class="shopContainer">
+            <% for (frame of filteredArray) { %>
+            <div class="col4">
+                    <div class="shopThumbnailItem">
+                        <img src="/images/<%=frame%>" alt="">
+                    </div>
+                    <a href="/users/shop/<%=frame%>?_method=PUT" class="shop_button">100 POINTS</a>
+            </div>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="shopTop">
+        <h2 class="sectionHeader">MY ASSTES</h2>
+    </div>
+    
+    <div class="shopBody">
+        <div class="shopContainer">
+            <% if (myprofileframes) { %>
+                <% for (frame of myprofileframes) { %>
+                    <div class="col4">
+                            <div class="shopThumbnailItem">
+                                <img src="/images/<%=frame%>" alt="">
+                            </div>
+                            <% if (user.profileframe == frame ) { %>
+                                <a href="/users/shop/Equipped/<%=frame%>?_method=PUT" class="shop_button">
+                                    Equipped</a>
+                            <% } else { %>
+                                <a href="/users/shop/Equip/<%=frame%>?_method=PUT" class="shop_button">Equip</a>
+                            <% } %>
+                    </div>
+                <% } %>
+            <% } %>
+        </div>
+    </div>
+
+</section>
+
+<%- include("partials/_footer") %>

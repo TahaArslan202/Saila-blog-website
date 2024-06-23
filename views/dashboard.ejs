@@ -1,0 +1,351 @@
+<%- include("partials/_header") %>
+
+ <!-- USER PROFİLE SECTİON -->
+
+<section class="header_wrapper">
+  <% if (user.profile.profileBackroundUrl === "varsayılan_profileBackroundUrl") { %>
+    <div style="background: url('../images/main1.jpg') no-repeat 50% 20% / cover;" class="user_backround"></div>
+  <% } else { %>
+    <div style="background: url('<%= user.profile.profileBackroundUrl %>') no-repeat 50% 20% / cover;" class="user_backround"></div>
+  <% } %>
+  <div class="cols_container">
+      <div class="left_col">
+          <div class="image_container">
+            <% if (user.profileframe === "default") { %>
+
+            <% } else { %>
+              <img class="avatarframe" src="/images/<%= user.profileframe %>" alt="">
+            <% } %>
+            <% if (user.profile.profileUrl === "varsayılan_profileUrl") { %>
+              <img class="avatar" src="/images/user.jpg" alt="">
+            <% } else { %>
+              <img class="avatar" src="<%= user.profile.profileUrl %>" alt="">
+            <% } %>
+              <span></span>
+          </div>
+          <h2><%= user.username %></h2>
+          <% if (user.profile.profilejob === "varsayılan_profilejob") { %>
+            <p>Title : Not entered</p>
+          <% } else { %>
+            <p><%= user.profile.profilejob %></p>
+          <% } %>
+          <p><%= user.email %></p>
+
+          <ul class="user_about">
+              <li><span><%=user.followers.length %></span>Followers</li>
+              <li><span><%=user.following.length %></span>Following</li>
+              <li><span><%=comments.length+commentcomments.length %></span>Comments</li>
+              <li><span><%=blogs.length %></span>Blogs</li>
+
+          </ul>
+
+          <div class="user_content">
+              <p>Links to increase communication</p>
+
+              <ul>
+                  <li><a href="<%=user.profile.profiletwitter %>"><i class="fa fa-twitter"></i></a></li>
+                  <li><a href="<%=user.profile.profilefacebook %>"><i class="fa fa-facebook"></i></a></li>
+                  <li><a href="<%=user.profile.profileinstegram %>"><i class="fa fa-instagram"></i></a></li>
+                  <li><a href="<%=user.profile.profilepinterest %>"><i class="fa fa-pinterest"></i></a></li>
+              </ul>
+
+          </div>
+      </div>
+
+      <div class="right_col">
+          <nav>
+              <ul>
+                  <li><a id="bloglink" href="#" onclick="blogShow(event)">My Blogs</a></li>
+                  <li><a id="aboutlink" href="#" onclick="aboutShow(event)">About</a></li>
+                  <li><a id="uploadlink" href="#" onclick="uploadShow(event)">Upload Blog</a></li>
+                  <li><a id="commentslink" href="#" onclick="commentsShow(event)">Comments</a></li>
+                  <li><a id="followerlink" href="#" onclick="followerShow(event)">Follower</a></li>
+                  <li><a id="followedlink" href="#" onclick="followedShow(event)">Following</a></li>
+                  <li><a id="updatelink" href="#" onclick="updateShow(event)">Update Profile</a></li>
+              </ul>
+              
+          </nav>
+
+          <div id="user_blogs">
+            <% for (blog of blogs) { %>
+            <div class="userBlogItem">
+              <div class="userThumbnailItem">
+                  <a href="/blogs/<%= blog.id %>">
+                      <img src="<%= blog.url %>" alt="<%= blog.name %>">
+                      <div class="userThumbnailContentname">
+                        <div class="userThumbnailContent1">
+                          <div class="title"><%= blog.name %></div>
+                          <div class="category"><%= blog.category %></div>
+                        </div>
+                      </div>
+                      <div class="userThumbnailContentlikedis">
+                        <div class="userThumbnailContent2">
+                          <div class="like"><i class="fa fa-thumbs-up"></i><%= blog.likes.length %><i class="fa fa-thumbs-down"></i><%= blog.dislikes.length %></div>
+                          <div class="read"><i class="fa fa-book"></i> <%= blog.blogread.length %></div>
+                        </div>
+                      </div>
+                  </a>
+              </div>
+              <div class="deleteupdate">
+                <a class="" href="#" onclick="idshow('<%= blog._id %>'),updateFormAction(),updateBlogShow(event)">Update</a>
+                <a class="" href="/blogs/<%= blog._id %>/?_method=DELETE" onclick="return confirm('Do you want to delete the Blog')">Delete</a>
+              </div>
+            </div>
+            <% } %>
+          </div>
+
+          <div id="userAbout">
+              <h2>About Me</h2>
+              <% if (user.profile.profileaboutMe === "varsayılan_profileaboutMe") { %>
+                <p>You did not enter any information about yourself</p>
+              <% } else { %>
+                <p><%= user.profile.profileaboutMe %></p>
+              <% } %>
+          </div>
+
+          <section id="dashboard">
+              <div class="dashboard_container">
+                <form class="dashboard-form" method="POST" action="/blogs" enctype="multipart/form-data" onsubmit="disableButton()">
+                  <h2>Blog Upload Form</h2>
+
+                  <div class="form-group">
+                    <label for="Title">Blog Title :</label>
+                    <input type="text" placeholder="Title" name="name" >
+                  </div>
+
+                  <div class="input-box1">
+                    <div style="display: none; color: #660000;" class="alert alert-danger" id="blogname" ></div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="description">Blog Description :</label>
+                    <textarea placeholder="Write your blog..." rows="4" name="description" ></textarea>
+                  </div>
+
+                  <div class="input-box1">
+                    <div style="display: none; color: #660000;" class="alert alert-danger" id="blogdescription" ></div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="category">Blog Category :</label>
+                    <select  name="category" >
+                      <option value="Love">Love</option>
+                      <option value="Technology">Technology</option>
+                      <option value="Life">Life</option>
+                      <option value="Travel">Travel</option>
+                      <option value="Animal">Animal</option>
+                      <option value="Nature">Nature</option>
+                      <option value="Movie">Movie</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="image">Blog Image :</label>
+                    <input type="file" name="image" id="imageInput">
+                  </div>
+
+                  <div class="input-box1">
+                    <div style="display: none; color: #660000;" class="alert alert-danger" id="blogimage" ></div>
+                  </div>
+
+                  <button type="submit" id="submitButton">Save</button>
+                </form>
+              </div>
+          </section>
+
+          <div id="userComment">
+            <h2>MY COMMEST</h2>
+            <% for (comment of comments) { %>
+              <div class="userCommentItem">
+                    <div class="userComment">
+                      <% comment.content.split(/\n\s*\n/).forEach(function(paragraph) { %>
+                        <p><%= paragraph %></p>
+                    <% }); %>
+                    </div>
+                    <div class="deletecomment">
+                    <p>Commented Blog :<a id="b"  href="/blogs/<%= comment.blognameid.id %>"><%= comment.blognameid.name %></a></p>
+                    <a class="" href="/blogs/<%= comment._id %>/comment/?_method=DELETE" onclick="return confirm('Do you want to delete the Comment')">Delete</a>
+                    </div>
+              </div>
+            <% } %>
+            <% if(!(commentcomments === null)) { %>
+            <% for (comment of commentcomments) { %>
+              <div class="userCommentItem">
+                    <div class="userComment">
+                      <% comment.content.split(/\n\s*\n/).forEach(function(paragraph) { %>
+                        <p><span class="reply-to">@<%= comment.personanswer.username %>: </span><%= paragraph %></p>
+                    <% }); %>
+                    </div>
+                    <div class="deletecomment">
+                    <p>Commented Blog :<a id="b"  href="/blogs/<%= comment.blognameid.id %>"><%= comment.blognameid.name %></a></p>
+                    <p>Under <%= comment.commentpersonanswerauthor.username %>'s comment</p>
+                    <a class="" href="/blogs/<%= comment.commentpersonanswer %>/comment/<%= comment._id %>/?_method=DELETE" onclick="return confirm('Do you want to delete the Comment')">Delete</a>
+                    </div>
+              </div>
+            <% } %>
+            <% } %>
+          </div>
+
+
+          <div id="user_follower">
+            <% for (follower of user.followers) { %>
+                <div class="userFollowerItem">
+                  <% if (follower.profile.profileUrl === "varsayılan_profileUrl") { %>
+                    <a href="/users/<%= follower.id %>"><img src="/images/user.jpg" alt=""></a>
+                  <% } else { %>
+                    <a href="/users/<%= follower.id %>"><img src="<%= follower.profile.profileUrl %>" alt=""></a>
+                  <% } %>
+                    <% if (follower.onlineoffline == "yellow") { %>
+                    <span></span>
+                    <% } else { %>
+                    <span style="background: red;"></span>
+                    <% } %>
+                    <h2><%= follower.username %></h2>
+                </div>
+            <% } %>
+        </div>
+
+        <div id="user_followed">
+            <% for (follower of user.following) { %>
+                <div class="userFollowedItem">
+                  <% if (follower.profile.profileUrl === "varsayılan_profileUrl") { %>
+                    <a href="/users/<%= follower.id %>"><img src="/images/user.jpg" alt=""></a>
+                  <% } else { %>
+                    <a href="/users/<%= follower.id %>"><img src="<%= follower.profile.profileUrl %>" alt=""></a>
+                  <% } %>
+                    <% if (follower.onlineoffline == "yellow") { %>
+                    <span></span>
+                    <% } else { %>
+                    <span style="background: red;"></span>
+                    <% } %>
+                    <h2><%= follower.username %></h2>
+                    <a class="unfolButton" href="/users/<%= follower._id %>/unfollow?_method=PUT">Unfollow</a>
+                </div>
+            <% } %>
+        </div>
+
+        <section id="updatedashboard">
+          <div class="updatedashboard_container">
+            <form class="updatedashboard-form" method="POST" enctype="multipart/form-data" onsubmit="blogdisableButton()">
+              <h2>Blog Update Form</h2>
+
+              <div class="form-group">
+                <label for="Title">New Blog Title :</label>
+                <input type="text" placeholder="Title" name="name" >
+              </div>
+
+              <div class="form-group">
+                <label for="description">New Blog Description :</label>
+                <textarea placeholder="Write your blog..." rows="4" name="description" ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="category">New Blog Category :</label>
+                <select  name="category" >
+                  <option value="Love">Love</option>
+                  <option value="Technology">Technology</option>
+                  <option value="Life">Life</option>
+                  <option value="Travel">Travel</option>
+                  <option value="Animal">Animal</option>
+                  <option value="Nature">Nature</option>
+                  <option value="Movie">Movie</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="image">New Blog Image :</label>
+                <input type="file" name="image" >
+              </div>
+
+              <button type="submit" id="blogUpdateButton">Save</button>
+
+            </form>
+            </div>
+        </section>
+
+        <section id="updateprofiledashboard">
+            <div class="updateprofiledashboard_container">
+
+              <form class="updateprofiledashboard-form" method="POST" action="/users/dashboard/profileupdate" enctype="multipart/form-data" onsubmit="profiledisableButton()">
+                <h2>User Profile Form</h2>
+                <div class="form-group">
+                  <label for="username">New Username:</label>
+                  <input type="text"  name="profileusername" placeholder="Username" >
+                </div>
+
+                <div class="input-box1">
+                  <div class="alert alert-danger" id="profileusername" ></div>
+                </div>
+
+              <div class="form-group">
+                  <label for="email">New Email:</label>
+                  <input type="email"  name="profileemail" placeholder="Email" >
+              </div>
+
+              <div class="input-box1">
+                <div style="display: none;" class="alert alert-danger" id="profileemail" ></div>
+              </div>
+
+              <div class="form-group">
+                  <label for="password">New Password:</label>
+                  <input type="password"  name="profilepassword" placeholder="Password" >
+              </div>
+
+              <div class="input-box1">
+                <div style="display: none;" class="alert alert-danger" id="profilepassword" ></div>
+              </div>
+              <hr>
+
+              <div class="form-group">
+                <label for="username">Your Title:</label>
+                <input type="text"  name="profilejob" placeholder="Title">
+              </div>
+
+              <div class="form-group">
+                  <label for="about">About Me:</label>
+                  <textarea id="about" name="profileabout" rows="4" placeholder="Write about yourself..."></textarea>
+              </div>
+
+              <div class="form-group">
+                  <label for="twitter">Twitter Link:</label>
+                  <input type="url"  name="profiletwitter" placeholder="Your X link">
+              </div>
+
+              <div class="form-group">
+                <label for="facebook">Facebook Link:</label>
+                <input type="url" name="profilefacebook" placeholder="Your Facebook link">
+            </div>
+
+              <div class="form-group">
+                  <label for="instagram">Instagram Link:</label>
+                  <input type="url"  name="profileinstagram" placeholder="Your Instagram link">
+              </div>
+
+              <div class="form-group">
+                  <label for="facebook">Pinterest Link:</label>
+                  <input type="url" name="profilepinterest" placeholder="Your Pinterest link">
+              </div>
+
+              <div class="form-group">
+                  <label for="profilePicture">Profile Image:</label>
+                  <input type="file"  name="profilePicture" accept="image/*">
+              </div>
+
+              <div class="form-group">
+                  <label for="backgroundPicture">Profile Backround Image:</label>
+                  <input type="file"  name="profilebackgroundPicture" accept="image/*">
+              </div>
+
+                <button type="submit" id="profileButton" >Save</button>
+              </form>  
+
+            </div>
+        </section>
+
+
+  </div>
+</section>
+
+<script src="/js/dashboard.js"></script>
+
+<%- include("partials/_footer") %> 

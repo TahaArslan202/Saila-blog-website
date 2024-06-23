@@ -1,0 +1,83 @@
+<%- include("partials/_header") %>
+
+    <!-- HERO SECTİON -->
+
+    <section id="hero">
+        <div id="mainCaption" class="caption">
+            <h1 class="mainCaptionTitle">SAİLA</h1>
+            <p>Share Your Story with the World</p>
+            <p>Reflect Your Own World, Inspire with Your Unique Stories.</p>
+            <% if(user) { %>
+                <a class="main-btn" href="/users/dashboard">Get Started!</a>
+			<% } else { %>
+                <a class="main-btn" href="/login">Get Started!</a>
+			<% } %>
+        </div>
+    </section>
+
+     <!-- LİFE SECTİON -->
+
+    <section id="sectionLife" class="sectionArea sectionSetting">
+
+        <div class="image">
+            <div class="parallax-inner">
+                <h2 class="parallaxText" >LIFE</h2>
+            </div>
+        </div>
+
+         <div class="content">
+            <p class="contentText">Immortalize every moment and every thought in your life. Blogging is the most powerful way to connect your inner world with the outer world!</p>
+        </div>
+
+    </section>
+
+     <!-- TECHNOLOGY SECTİON -->
+
+    <section id="sectionTec" class="sectionArea sectionSetting">
+
+        <div class="image">
+            <div class="parallax-inner">
+                <h2 class="parallaxText">TECHNOLOGY</h2>
+            </div>
+        </div>
+
+        <div class="content">
+            <p class="contentText">Chase innovations and discoveries in the world of technology. Leave your mark in the tech world by sharing your own experiences and ideas.</p>
+        </div>
+    </section>
+
+     <!-- TRAVEL SECTİON -->
+
+    <section id="sectionTravel" class="sectionArea sectionSetting">
+
+        <div class="image">
+            <div class="parallax-inner">
+                <h2 class="parallaxText">TRAVEL</h2>
+            </div>
+        </div>
+
+        <div class="content">
+            <p class="contentText">Explore every corner of the world and put these unique adventures into words. Traveling is not just about seeing, but also feeling and sharing.</p>
+        </div>
+
+    </section>
+
+    <!-- PASSİON SECTİON -->
+
+    <section id="sectionPassion" class="sectionArea sectionSetting">
+
+        <div class="image">
+            <div class="parallax-inner">
+                <h2 class="parallaxText">PASSION</h2>
+            </div>
+        </div>
+
+        <div class="content">
+            <p class="contentText">Showcase your passions on your blog. Whether it's art, sports, or any hobby, follow your passions and inspire the world.</p>
+        </div>
+
+    </section>
+    
+      <!-- FOOTER -->
+
+     <%- include("partials/_footer") %> 

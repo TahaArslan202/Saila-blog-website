@@ -1,0 +1,43 @@
+<%- include("partials/_header") %>
+
+    <!-- USERS SECTION -->
+
+    <section id="users" class="sectionArea ">
+
+        <div class="usersTop">
+            <h2 class="sectionHeader">USERS</h2>
+        </div>
+        
+        <div class="usersBody">
+            <div class="usersContainer">
+
+            <% for (user of users) { %>
+                <div class="col4">
+                        <div class="usersThumbnailItem">
+                            <a href="/users/<%= user.id %>">
+                                    <% if (user.profile.profileBackroundUrl === "varsayılan_profileBackroundUrl") { %>
+                                        <img class="profileimages" src="/images/main1.jpg" alt="">
+                                    <% } else { %>
+                                        <img class="profileimages" src="<%= user.profile.profileBackroundUrl %>" alt="">
+                                    <% } %>
+                                <div class="usersimage_container">
+                                    <% if (user.profile.profileUrl === "varsayılan_profileUrl") { %>
+                                        <img src="/images/user.jpg" alt="">
+                                    <% } else { %>
+                                        <img src="<%= user.profile.profileUrl %>" alt="">
+                                    <% } %>
+                                </div>
+                                <div class="usersThumbnailContent">
+                                    <div class="title"><%= user.username %></div>
+                                </div>
+                            </a>
+                        </div>
+                </div>
+            <% } %>
+            </div>
+            
+        </div>
+
+    </section>
+
+<%- include("partials/_footer") %>
